@@ -13,24 +13,32 @@
 # Opening Missions Writing Credit to: Disiuze, Kiko, Moonbeam, Kat
 # 
 
-event "enlistment announced"
-	date 11 7 3014
 
+event "contractor expansion begins"
+	date 18 7 3014
 
-mission "enlistment announced"
+mission "contractor expansion timer"
+	landing
+	to offer
+		has "event: contractor expansion begins"
+		has "event: war begins: done"
+	on offer
+		event "contractor timer" 20
+
+event "contractor timer"
+
+mission "contractor expansion"
 	landing
 	source
 		government "Republic"
+		government "Syndicate"
 	to offer
-		has "event: enlistment announced"
+		has "event: contractor timer"
 	on offer
-		log "The Republic Navy announced it will begin recruiting."
+		log "The Republic Navy appears to have opened up expanded options for hiring contractors to perform security tasks."
 		conversation
-			`On behalf of the republic the navy will begin accepting volunteers into navy service next week. With the loss of ships in the devastating nuclear attack on our ship yard we need all combat capable ship captains. Volunteers will be paid a per diem. Interested ship captains will be required to prove their worth to earn their place. More information will be provided at a later point in time.`
-
-
-event "enlistment begins"
-	date 18 7 3014
+			`As you come in to land you glance at the local bulletins as per usual. To your surprise though, among the standard weather advisories for small ships and featured deals on trade goods or local services, there is a pilot-only bulletin from the Navy. Or more specifically, a bulletin from the local traffic control on behalf of the Navy. It seems that they've given their various contract management officers more scope to hire pilots for odd jobs, and while that's not been announced it seems to be a poorly kept secret, at least among pilots.`
+				decline
 
 mission "Republic Bounty 1"
 	name "Republic Bounty Hunting"
@@ -40,7 +48,7 @@ mission "Republic Bounty 1"
 		government "Republic"
 		attributes "dirt belt"
 	to offer
-		has "event: war begins"
+		has "contractor expansion: declined"
 		"combat rating" > 40
 		not "chosen sides"
 		random < 65
