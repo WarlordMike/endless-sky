@@ -1,4 +1,4 @@
-# Copyright (c) 2020 by Bereskatuket
+# Copyright (c) 2014 by Michael Zahniser
 #
 # Endless Sky is free software: you can redistribute it and/or modify it under the
 # terms of the GNU General Public License as published by the Free Software
@@ -10,6 +10,7 @@
 
 # Republic/Navy Campaign Project Lead: Bereskatuket
 # Head Writer/Creative Consultant/Resident Grammar Nazi: Warlord Mike
+# Narrative Structure & Lore Support: MasterOfGrey
 # Opening Missions Writing Credit to: Disiuze, Kiko, Moonbeam, Kat
 # 
 
@@ -171,7 +172,7 @@ mission "Republic Bounty 3"
 		"assisted republic" ++
 		payment 250000
 		conversation
-			`Soon after you land, Captain Shah contacts you. "The hostages were recovered safely," she says, with a smile. "The Republic expresses its gratitude. Since you are no doubt interested in more tangible benefits, <payment> have been transferred to your account by way of this gratitude. Further, you should know I have recorded and endorsement in your file that you can be counted on."`
+			`Soon after you land, Captain Shah contacts you. "The hostages were recovered safely," she says, with a smile. "The Republic expresses its gratitude. Since you are no doubt interested in more tangible benefits, <payment> have been transferred to your account by way of this gratitude. Further, you should know I have recorded an endorsement in your file that you can be counted on."`
 
 
 
@@ -194,30 +195,28 @@ mission "Republic Scouting 1"
 
 	on offer
 		conversation
-			`As you wander the spaceport you overhear a woman in a Navy uniform telling a bored-looking merchant about satellite dishes in the empty systems to the north.`
-			`	"That sounds interesting," the merchant tells her. "But I've got a cargo bay full of medical supplies headed the other direction."`
-			`	"Also an important mission," she replies. "I wish you safe travels."`
+			`As you wander the spaceport you overhear a woman in a Navy uniform telling a bored-looking merchant about sensor buoys in the empty systems to the north.`
+			`	"That sounds interesting," the merchant tells her, "but I've got a cargo bay full of medical supplies headed the other direction."`
+			`	"Also an important mission, I wish you safe travels," she replies.`
 			choice
 				`	(Ask her what's going on.)`
 				`	(Walk away.)`
 					decline
-			`	"Do you need help with retrieving a satellite?" you ask the Navy officer, interested, as the other merchant captain walks away.`
-			`	"Not quite." She replies brightly. "We've been experiencing some latency between Farpoint and Maelstrom. I'd need someone to fly through, then let me look at their logs so I can figure out what the trouble is."`
+			`	"Do you need help with something?" you ask the Navy officer, interested, as the other merchant captain walks away.`
+			`	"Oh yes," she replies brightly. "We need to replace some assets along the patrol route between Farpoint and Maelstrom, but they can't come from a Navy ship or it rather defeats the purpose. I'd need someone to fly through and jettison some things inconspicuously."`
 			choice
 				`	"Sounds simple enough."`
 				`	"Sorry, I won't be able to help you either."`
 					decline
-			`	"Excellent." She smiles. "I'm Captain Jane Melgrew, by the way. Thank you for your help."`
+			`	"Excellent." She smiles. "I'm Commander Jane Melgrew, by the way. Thank you for your help."`
 				accept
-
-	on accept
-		log "Volunteered to help track down the cause of some latency for the Republic."
-
+	on waypoint
+		dialog `As you watch the last load of "trash" get dumped into space you finally catch sight of the assets you've been delivering on your sensors, though only briefly and only because you'd pointed them right at them. It seems you've been dropping off stealthy sensor buoys.`
 	on complete
 		payment 30000
-		dialog
-			`As you land on <destination>, Jane approaches you again. "Thank you on behalf of not only the Republic, but everyone who uses this network. I've transfered <payment> to your account."`
-
+		log `Volunteered to help deploy some "assets" for the Republic. They were stealth sensor buoys.`
+		conversation
+			`As you land on <destination>, Jane approaches you again. "Thank you on behalf of not only the Republic, but especially the Navy personnel who work in that area. I've transfered <payment> to your account."`
 
 
 mission "Republic Scouting 2"
@@ -230,30 +229,35 @@ mission "Republic Scouting 2"
 	waypoint "Ipsing"
 	source
 		government "Republic"
-	destination "Follower"
+	destination "Hestia"
 	to offer
 		has "Republic Scouting 1: done"
 		not "chosen sides"
 		random < 40
 
 	on offer
-		dialog
-			`You receive a message from Jane, the Navy captain who asked you to fly through some uninhabited systems to the north. "I need some data from a few dead end systems," she says. "There might be some pirate fleets in the area but I just need logs again. Interested?"`
-
+		conversation
+			`Upon landing you find a message waiting for you in the buffer. It appears to be from Jane, the Navy commander who asked you to fly through some uninhabited systems to the north.`
+			`	"I need some data from a few dead end systems," it reads. "There might be some pirate fleets in the area but I just need logs this time. You seem to be capable of acting with discretion, so if you're interested, let me know and then bring the logs to me on Hestia."`
+			choice
+				`	(Reply in the affirmative.)`
+					accept
+				`	(Reply in the negative.)`
+					decline
 	on complete
 		payment 40000
-		dialog
-			`You transfer your sensor logs to Captain Melgrew. She thanks you for your work, and pays you <payment>. She says, "I'll let you know when we have more work."`
-		log "People" "Jane Melgrew" "Jane Melgrew is a Navy captain charged with all manner of odd jobs, from diagnosing hyperspace network problems, to scouting uninhabited systems."
-
+		log "People" "Jane Melgrew" "Jane Melgrew is a Navy commander who seems to mostly deal in contracting information gathering services that are inconvenient for the Navy to do themselves."
+		conversation
+			`You message Commander Melgrew upon landing and transfer your sensor logs to her. She thanks you for your work, and pays you <payment>.`
+			`	Before ending the call she informs you that she will undoubtedly let you know when she has more work.`
 
 
 mission "Republic Scouting 3"
 	name "Navy Reconnaissance"
-	description "Perform an outfit scan on the <npc> in Yed Prior, then report to Captain Melgrew on <destination>."
+	description "Perform an outfit scan on the <npc> in Yed Prior, then report to Commander Melgrew on <destination>."
 	source
 		government "Republic"
-	destination "Follower"
+		near "Miaplacidus" 1 1
 	to offer
 		has "Republic Scouting 2: done"
 		not "chosen sides"
@@ -261,21 +265,21 @@ mission "Republic Scouting 3"
 
 	on offer
 		conversation
-			`As you step off your ship, you are greeted by an out-of-breath Jane Melgrew. "Captain <last>!" she exclaims. "Glad I caught you. I have another job, and I couldn't just send you a message for this one.`
+			`As you are about to leave the spaceport and return to your ship, you are accosted by an out-of-breath Jane Melgrew. "Captain <last>!" she exclaims. "Glad I caught you. I have another job, and I couldn't just send you a message for this one.`
 			choice
 				`	"What's going on?"`
 				`	"Sorry, I'm really busy."`
 					decline
-			`	"We have reason to believe there is a ship loaded with alien tech somewhere in the south," she says. "As I'm sure you've heard, the worlds in this area have been organizing a rebellion. So far they've been peaceful, but if they are arming themselves with alien technology, that could be a major problem for us. Would you be able to track down the ship and scan it?"`
+			`	She pulls you aside to a quieter corner with fewer prying eyes and ears.`
+			`	"We have a report that there is a ship loaded with alien tech somewhere in the south," she says. "As I'm sure you've heard, the worlds in this area have broken away and are potentially organizing a rebellion. So far they've been peaceful, but if they are arming themselves with alien technology, that could be a major problem for us.`
+			`	Of course, I put about as much stock in that claim as I do rumors of furry squirrel people, but the governors and mayors on worlds like these like to throw their weight around and keep insisting we look into it as if it's some matter of their own personal security. I insisted that I would find someone capable of acting with the appropriate discretion on this case, and someone not within the Navy. So since it's their money up for the job, would you please be able to track down the ship and scan it for me?"`
 			choice
 				`	"Sure, that sounds simple enough."`
-				`	"Sorry, that sounds way too dangerous."`
+				`	"Sorry, that sounds too dangerous."`
 					decline
-			`	"Fantastic. It's a Falcon named the <npc>, last seen near Yed Prior. If it is alien technology, we'll be the first in the Republic to see it, how exciting."`
+			`	"Fantastic, that'll get them off my back for now at least. It's a Falcon named the <npc>, last seen near Yed Prior. Find out if it is in fact alien technology, and report back here. With any luck it'll just be normal stuff that's impressed some backwards old trader who hasn't been keeping up with the times. And if not well, maybe we'll be the first in the Republic to see it."`
+			`	She gives you a very brief wink, as if you're sharing some sort of in-joke, and lets you be on your way.`
 				accept
-
-	on accept
-		log "Volunteered to scan a ship in Free Worlds space that might be armed with alien technology."
 
 	npc "scan outfits"
 		personality staying uninterested
@@ -294,15 +298,18 @@ mission "Republic Scouting 3"
 			`	"Alien? Well, maybe to someone flying a tub like yours," he says, chuckling. "No, I promise you this is all standard human fare."`
 				goto close
 			label equipment
-			`	He looks awfully pleased with himself. "Yes, she is quite the beauty. I would have never been able to afford anything like this without the Defense Pact's scouting program," he says. "She makes keeping pirates out of our territory as easy as a dream. If you're interested in trading that tub you've got in for something like this, the program should be hiring again soon."`
+			`	He looks awfully pleased with himself. "Yes, she is quite the beauty. I would have never been able to afford anything like this without the Defense Pact's scouting program," he says. "She makes keeping pirates out of our territory as easy as a dream. If you're interested in trading that tub you've got in for something like this, the program should be hiring around these parts again soon."`
 			label close
 			`	You cut the comlink and breathe a sigh of relief that the conversation is over.`
 
 	on complete
 		"assisted republic" ++
-		dialog `Soon after you land, Jane comes to your ship and pays you <payment> in exchange for your sensor logs regarding <npc>. "No alien tech, I see," she says, sounding dissapointed. "While that would have been a great find, I will admit I'm happy I don't have to figure out how to defend against it. I've let my supervisors know how helpful you've been, hopefully we can work together again soon." `
 		payment 50000
-		log "Captain Melgrew says she has put a good word in for me with her superiors."
+		log "Volunteered to scan a ship in Free Worlds space that might have been armed with alien technology. It was not, but Commander Melgrew appears to have been satisfied either way."
+		conversation
+			`Soon after you land, Jane meets you in the spaceport and pays you <payment> in exchange for your sensor logs regarding <npc>.`
+			`	"No alien tech, I see," she says, sounding disappointed. "While that would have been a great find, I'm just as happy not to pander to the fears of these pompous...`
+			`	"Ahem," she coughs. "I will also admit I'm happy I don't have to figure out how to defend against mysterious alien tech either. I've I have recorded an endorsement in your file for how helpful you've been, hopefully we can work together again soon." `
 
 
 
